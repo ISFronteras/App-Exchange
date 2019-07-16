@@ -115,6 +115,7 @@ export class UserComponent implements OnInit, OnChanges, OnDestroy {
       name: ['', Validators.required],
       entity: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
+      eWallet: ['', [Validators.required]],
       numberAccount: ['', Validators.compose([
         Validators.required,
         Validators.pattern('[0-9]+')
@@ -137,6 +138,7 @@ export class UserComponent implements OnInit, OnChanges, OnDestroy {
       name: [account.name, Validators.required],
       entity: ['', Validators.required],
       email: [account.email, [Validators.required, Validators.email]],
+      eWallet: ['', [Validators.required]],
       numberAccount: [account.numberAccount, Validators.compose([
         Validators.required,
         Validators.pattern('[0-9]+')

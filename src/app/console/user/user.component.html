@@ -148,6 +148,15 @@
             </mat-error>
           </mat-form-field>
           <mat-form-field *ngIf="type.value === typeAccounts.plataform">
+            <input matInput type="text" placeholder="E-Wallet" formControlName="eWallet">
+            <mat-error *ngIf="email.hasError('required')">
+              El campo es requerido.
+            </mat-error>
+            <mat-error *ngIf="eWallet.hasError('required')">
+              Ingrese una E-Wallet
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field *ngIf="type.value === typeAccounts.plataform.banking">
             <input matInput type="email" placeholder="Correo electrónico" formControlName="email">
             <mat-error *ngIf="email.hasError('required')">
               El campo es requerido.
