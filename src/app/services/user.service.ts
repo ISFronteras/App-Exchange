@@ -45,18 +45,12 @@ export class UserService {
   }
 
   registerAccount(newAccount: Account, uid: string) {
-    if(newAccount.email) {
-      const cleanEmail = newAccount.email.replace('.', ',') //Firebase don't accept dot in string.
-      newAccount.email = cleanEmail;
-    }
+   
     return this.angularFireDatabase.object('/accounts/' + uid + '/' + newAccount.date ).set(newAccount);
   }
 
   editAccount(account: Account, uid: string) {
-    if(account.email) {
-      const cleanEmail = account.email.replace('.', ',') //Firebase don't accept dot in string.
-      account.email = cleanEmail;
-    }
+   
     return this.angularFireDatabase.object('/accounts/' +uid + '/' + account.date ).update(account);
   }
 

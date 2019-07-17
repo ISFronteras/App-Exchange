@@ -158,7 +158,18 @@
       <p><b>Fecha: </b>{{operation.date | date:'dd-MM-yyyy, hh:mm aa'}}</p>
       <p><b>Monto: </b>{{operation.amount}}</p>
       <p><b>Cuenta de Origen: </b>{{operation.originAccount.id}}</p>
-      <p *ngIf="operation.destinationAccount"><b>Cuenta Destino: </b>{{operation.destinationAccount.id}}</p>
+      <p *ngIf="operation.destinationAccount">
+        <b>Cuenta Destino: </b>{{operation.destinationAccount.id}}    
+      </p>
+      <p *ngIf="operation.destinationAccount.name">
+          <b>Nombre titular: </b>{{operation.destinationAccount.name}}
+      </p>
+      <p *ngIf="operation.destinationAccount.accountType">
+          <b>Tipo de cuenta: </b>{{operation.destinationAccount.accountType}}
+      </p>
+      <p *ngIf="operation.destinationAccount.numberAccount">
+          <b>Numero de cuenta: </b>{{operation.destinationAccount.numberAccount}}
+      </p>
       <p><b>Cantidad a recibir: </b>{{operation.toReceive}}</p>
       <p *ngIf="operation.comment"><b>Comentario adicional: </b>{{operation.comment}}</p>
 

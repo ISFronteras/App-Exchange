@@ -2,7 +2,7 @@ export interface Account {
   accountType?: any;
   currency: string;
   date: number;
-  email?: any;
+  eWallet?:any;
   entity?: any;
   id: string;
   name: any;

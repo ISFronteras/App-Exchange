@@ -114,8 +114,7 @@ export class UserComponent implements OnInit, OnChanges, OnDestroy {
       plataform: ['', Validators.required],
       name: ['', Validators.required],
       entity: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      eWallet: ['', [Validators.required]],
+      eWallet: ['', Validators.required],
       numberAccount: ['', Validators.compose([
         Validators.required,
         Validators.pattern('[0-9]+')
@@ -125,10 +124,7 @@ export class UserComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   buildEditAccountForm(account: Account) {
-    if (account.email) {
-      const cleanEmail = account.email.replace(',', '.') //Firebase don't accept dot in string.
-      account.email = cleanEmail;
-    }
+   
     this.plataform.setValue(account.plataform)
     this.entity.setValue(account.entity)
     this.registerAccountForm = this.formBuilder.group({
@@ -137,8 +133,7 @@ export class UserComponent implements OnInit, OnChanges, OnDestroy {
       plataform: ['', Validators.required],
       name: [account.name, Validators.required],
       entity: ['', Validators.required],
-      email: [account.email, [Validators.required, Validators.email]],
-      eWallet: ['', [Validators.required]],
+      eWallet: ['', Validators.required],
       numberAccount: [account.numberAccount, Validators.compose([
         Validators.required,
         Validators.pattern('[0-9]+')
@@ -275,16 +270,16 @@ export class UserComponent implements OnInit, OnChanges, OnDestroy {
     return this.registerAccountForm.get('entity');
   }
 
-  get email() {
-    return this.registerAccountForm.get('email');
-  }
-
   get numberAccount() {
     return this.registerAccountForm.get('numberAccount');
   }
 
   get accountType() {
     return this.registerAccountForm.get('accountType');
+  }
+
+  get eWallet() {
+    return this.registerAccountForm.get('eWallet');
   }
 
   saveImage() {
@@ -351,9 +346,9 @@ export class UserComponent implements OnInit, OnChanges, OnDestroy {
     if (this.type.value === this.typeAccounts.plataform) {
       this.account = {
         currency: this.plataform.value.currency,
-        id: `${this.plataform.value.name}: ${this.email.value}`,
+        id: `${this.plataform.value.name}: ${this.eWallet.value}`,
         name: this.name.value,
-        email: this.email.value,
+        eWallet : this.eWallet.value,
         date: date,
         plataform: this.plataform.value,
         type: this.type.value
@@ -368,7 +363,7 @@ export class UserComponent implements OnInit, OnChanges, OnDestroy {
           return
         }
       }
-      if (this.email.hasError('email') ) {
+      if (this.eWallet.hasError('eWallet') ) {
         return
       }
     } else if (this.type.value === this.typeAccounts.banking) {
@@ -427,9 +422,9 @@ export class UserComponent implements OnInit, OnChanges, OnDestroy {
       this.account = {
         date: this.date.value,
         currency: this.plataform.value.currency,
-        id: `${this.plataform.value.name}: ${this.email.value}`,
+        id: `${this.plataform.value.name}: ${this.eWallet.value}`,
         name: this.name.value,
-        email: this.email.value,
+        eWallet : this.eWallet.value,
         plataform: this.plataform.value,
         type: this.type.value
       }
@@ -443,7 +438,7 @@ export class UserComponent implements OnInit, OnChanges, OnDestroy {
           return
         }
       }
-      if (this.email.hasError('email')) {
+      if (this.eWallet.hasError('eWallet')) {
         return
       }
     } else if (this.type.value === this.typeAccounts.banking) {
