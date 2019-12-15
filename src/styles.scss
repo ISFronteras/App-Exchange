@@ -32,3 +32,15 @@ $app-exchange-theme: mat-light-theme($app-exchange-primary, $app-exchange-accent
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+* {
+  -webkit-font-smoothing: antialased;
+  -moz-osx-font-smoothing: antialased;
+  font-family: 'Roboto', sans-serif;
+}
+
+
+/* SPACER */
+.spacer {
+  flex: 1 1 auto;
+}

@@ -4,14 +4,106 @@
       <h2 class="title">Transferencia</h2>
     </mat-card-title>
     <mat-card-content *ngIf="currentUser">
-      <mat-list *ngIf="messages">
-        <ng-container *ngFor="let message of messages">
+      <mat-list *ngIf="addAccount == false && messagesTransfer">
+        <ng-container *ngFor="let message of messagesTransfer">
           <mat-list-item>{{message}}</mat-list-item>
           <mat-divider></mat-divider>
         </ng-container>
         <br>
       </mat-list>
-      <form class="columns is-multiline is-centered is-mobile" [formGroup]="transferForm" (ngSubmit)="onSubmit()">
+      <mat-list *ngIf="addAccount == true && messagesAddAccount">
+        <ng-container *ngFor="let message of messagesAddAccount">
+          <mat-list-item>{{message}}</mat-list-item>
+          <mat-divider></mat-divider>
+        </ng-container>
+        <br>
+      </mat-list>
+
+      <div class="columns is-multiline is-centered is-mobile" *ngIf="addAccount==true" id="accounts">
+        <form [formGroup]="registerAccountForm" class="column is-three-fifths" >
+          <mat-form-field>
+            <mat-select placeholder="Seleccione un tipo de cuenta" formControlName="type">
+              <mat-option *ngFor="let type of typeAccounts | keyvalue" [value]="type.value">
+                {{type.value}}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="type.hasError('required')">
+              El campo es requerido.
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field *ngIf="registerAccountForm.value.type">
+            <input matInput type="text" placeholder="Nombre del titular de la cuenta" formControlName="name">
+            <mat-error *ngIf="name.hasError('required')">
+              El campo es requerido.
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field *ngIf="registerAccountForm.value.type === typeAccounts.plataform">
+            <mat-select placeholder="Plataforma electrónica" formControlName="plataform">
+              <ng-container *ngFor="let plataform of plataforms">
+                <ng-container *ngIf="plataform.type === typeAccounts.plataform">
+                  <mat-option [value]="plataform">
+                    {{plataform.name}}
+                  </mat-option>
+                </ng-container>
+              </ng-container>
+            </mat-select>
+            <mat-error *ngIf="plataform.hasError('required')">
+              El campo es requerido.
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field *ngIf="type.value === typeAccounts.plataform">
+            <input matInput type="text" placeholder="E-Wallet" formControlName="eWallet">
+            <mat-error *ngIf="eWallet.hasError('required')">
+              El campo es requerido.
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field *ngIf="type.value === typeAccounts.banking">
+            <input matInput type="number" placeholder="Documento de identificación" formControlName="dIdentificacion" min="0">
+            <mat-error *ngIf="dIdentificacion.hasError('required')">
+              El campo es requerido.
+            </mat-error>
+            <mat-error *ngIf="dIdentificacion.hasError('pattern')">
+              Sólo números sin decimales permitidos.
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field *ngIf="type.value === typeAccounts.banking">
+            <mat-select placeholder="Tipo de Cuenta Bancaria" formControlName="accountType">
+              <mat-option *ngFor="let accountType of accountTypes" [value]="accountType">
+                {{accountType}}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="accountType.hasError('required')">
+              El campo es requerido.
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field *ngIf="type.value === typeAccounts.banking">
+            <input matInput type="number" placeholder="Número de cuenta" formControlName="numberAccount" min="0">
+            <mat-error *ngIf="numberAccount.hasError('required')">
+              El campo es requerido.
+            </mat-error>
+            <mat-error *ngIf="numberAccount.hasError('pattern')">
+              Sólo números sin decimales permitidos.
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field *ngIf="registerAccountForm.value.type === typeAccounts.banking">
+            <mat-select placeholder="Entidad Bancaria" formControlName="entity">
+              <ng-container *ngFor="let plataform of plataforms">
+                <ng-container *ngIf="plataform.type === typeAccounts.banking">
+                  <mat-option [value]="plataform">
+                    {{plataform.name}}
+                  </mat-option>
+                </ng-container>
+              </ng-container>
+            </mat-select>
+            <mat-error *ngIf="plataform.hasError('required')">
+              El campo es requerido.
+            </mat-error>
+          </mat-form-field>
+        </form>
+      </div>
+
+
+      <form class="columns is-multiline is-centered is-mobile" [formGroup]="transferForm" (ngSubmit)="onSubmit()" *ngIf="addAccount==false">
         <div class="column is-full-mobile is-four-fifths-tablet">
           <div class="columns is-multiline is-centered is-mobile">
             <div class="column is-three-fifths-mobile is-half-tablet">
@@ -72,10 +164,14 @@
         <mat-divider></mat-divider>
       </form>
     </mat-card-content>
+
     <mat-card-actions class="columns is-mobile is-multiline is-centered">
       <div class="column is-narrow">
-        <button mat-raised-button color="primary" (click)="changeView('userView')">Regresar</button>
-        <button mat-raised-button color="primary" (click)="onSubmit()" type="button">Transferir</button>
+        <button mat-raised-button color="primary" (click)="changeView('userView')" *ngIf="addAccount==false">Regresar</button>
+        <button mat-raised-button color="primary" (click)="changeView('transferView')" *ngIf="addAccount==true">Regresar</button>
+        <button mat-raised-button color="primary" (click)="showAddAccount()" type="button"  *ngIf="addAccount==false">Agregar Cuenta</button>
+        <button mat-raised-button color="primary" (click)="onSubmit()" type="button"  *ngIf="addAccount==false" >Transferir</button>
+        <button mat-raised-button color="primary" *ngIf="addAccount==true" (click)="registerAccount()" [disabled]="disabled">Registrar Cuenta</button>
       </div>
     </mat-card-actions>
   </mat-card>

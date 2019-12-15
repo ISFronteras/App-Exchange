@@ -1,21 +1,27 @@
-<mat-sidenav-container>
-  <mat-sidenav #sidenav>
-    <mat-nav-list>
-      <app-sidenav-list
+<div>
+<app-header [sidenav]="sidenav"></app-header>
+
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #sidenav mode="side" opened>
+    <app-left-menu 
       [currentUser]="currentUser"
       [sidenav]="sidenav"
       (view)="changeView($event)"
-      (logout)="emitLogout($event)"></app-sidenav-list>
-    </mat-nav-list>
+      (logout)="emitLogout($event)"
+    ></app-left-menu>
   </mat-sidenav>
-
-  <mat-sidenav-content>
-    <button mat-raised-button color="primary" class="is-narrow menu" (click)="sidenav.toggle()">&#9776;</button>
-    <app-user *ngIf="view === 'userView'" (view)="changeView($event)" [currentUser]="currentUser"></app-user>
-    <app-transfer *ngIf="view === 'transferView'" (view)="changeView($event)" [currentUser]="currentUser"></app-transfer>
-    <app-withdraw *ngIf="view === 'withdrawView'" (view)="changeView($event)" [currentUser]="currentUser"></app-withdraw>
-    <app-historical *ngIf="view === 'historicalView'" [currentUser]="currentUser"></app-historical>
-    <app-admin *ngIf="view === 'adminView'" [currentUser]="currentUser"></app-admin>
-    <app-footer></app-footer>
+  <mat-sidenav-content [@onMainContentChange]="onSideNavChange ? 'open': 'close'">
+    <div >
+      <div style="padding: 20px">
+          <app-user *ngIf="view === 'userView'" (view)="changeView($event)" [currentUser]="currentUser"></app-user>
+          <app-transfer *ngIf="view === 'transferView'" (view)="changeView($event)" [currentUser]="currentUser"></app-transfer>
+          <app-withdraw *ngIf="view === 'withdrawView'" (view)="changeView($event)" [currentUser]="currentUser"></app-withdraw>
+          <app-historical *ngIf="view === 'historicalView'" [currentUser]="currentUser"></app-historical>
+          <app-admin *ngIf="view === 'adminView'" [currentUser]="currentUser"></app-admin>
+          <app-footer></app-footer>
+      </div>
+    </div>
   </mat-sidenav-content>
 </mat-sidenav-container>
+</div>
+

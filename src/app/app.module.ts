@@ -1,13 +1,14 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
-
 import { SharedModule } from './shared/shared.module';
 
+import { FlexLayoutModule } from '@angular/flex-layout';
+
+
 import { AngularFireModule } from '@angular/fire';
-import { environment } from '../environments/environment';
+import { environment } from '../environments';
 import { AngularFireAuthModule } from '@angular/fire/auth';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { AngularFireStorageModule } from '@angular/fire/storage';
@@ -21,6 +22,7 @@ import { faThumbsUp, faGrinAlt, faClock, faCheckSquare, faTimesCircle, faPlusSqu
 
 // Add an icon to the library for convenient access in other components
 library.add(faUserCheck, faThumbsUp, faGrinAlt, faClock, faEdit, faCheckSquare, faTimesCircle, faArrowCircleUp, faPlusSquare,faFileImage, faEllipsisV, faHeart, faLaptopCode);
+
 
 @NgModule({
   declarations: [
@@ -36,6 +38,7 @@ library.add(faUserCheck, faThumbsUp, faGrinAlt, faClock, faEdit, faCheckSquare, 
     AngularFireDatabaseModule,
     AngularFireStorageModule,
     BrowserAnimationsModule,
+    FlexLayoutModule,
     HttpClientModule
   ],
   providers: [],

@@ -119,6 +119,10 @@ export class UserComponent implements OnInit, OnChanges, OnDestroy {
         Validators.required,
         Validators.pattern('[0-9]+')
       ])],
+      dIdentificacion: ['', Validators.compose([
+        Validators.required,
+        Validators.pattern('[0-9]+')
+      ])],
       accountType: ['', Validators.required]
     });
   }
@@ -135,6 +139,9 @@ export class UserComponent implements OnInit, OnChanges, OnDestroy {
       entity: ['', Validators.required],
       eWallet: ['', Validators.required],
       numberAccount: [account.numberAccount, Validators.compose([
+        Validators.required,
+        Validators.pattern('[0-9]+')
+      ])],dIdentificacion: [account.documentNumber, Validators.compose([
         Validators.required,
         Validators.pattern('[0-9]+')
       ])],
@@ -282,6 +289,11 @@ export class UserComponent implements OnInit, OnChanges, OnDestroy {
     return this.registerAccountForm.get('eWallet');
   }
 
+  
+  get dIdentificacion() {
+    return this.registerAccountForm.get('dIdentificacion');
+  }
+
   saveImage() {
     const currentPictureId = Date.now();
     const pictures = this.firebaseStorage.ref('pictures/' + currentPictureId + '.jpg').putString(this.userImage, 'data_url');
@@ -375,6 +387,7 @@ export class UserComponent implements OnInit, OnChanges, OnDestroy {
         date: date,
         id: `${this.entity.value.name}: ${this.numberAccount.value}`,
         numberAccount: this.numberAccount.value,
+        documentNumber:this.dIdentificacion.value,
         type: this.type.value
       }
       const controls = Object.values(this.account);
@@ -450,6 +463,7 @@ export class UserComponent implements OnInit, OnChanges, OnDestroy {
         entity: this.entity.value,
         id: `${this.entity.value.name}: ${this.numberAccount.value}`,
         numberAccount: this.numberAccount.value,
+        documentNumber:this.dIdentificacion.value,
         type: this.type.value
       }
       const controls = Object.values(this.account);

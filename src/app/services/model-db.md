@@ -33,16 +33,27 @@ app-exchange/
 |					└───type
 |
 └───users/
-		└───$uid
-		└───balance
-		└───birthdate?
-		└───country?
-		└───displayName
-		└───email
-		└───idDocument?
-		└───idDocumentImage?
-		└───isAdmin?
-		└───isVerified
-		└───phoneNumber?
-		└───uid
+|		└───$uid
+|		└───balance
+|		└───birthdate?
+|		└───country?
+|		└───displayName
+|		└───email
+|		└───idDocument?
+|		└───idDocumentImage?
+|		└───isAdmin?
+|		└───isVerified
+|		└───phoneNumber?
+|		└───uid
+|
+└───plataformsBuySell/
+|		└───$plataformId
+|				└───id
+|				└───namePBuySell
+|				└───compraCop
+|               └───ventaCop
+|				└───compraBs
+|				└───ventaBs
+|               └───compraSoles
+|				└───ventaSoles
 ```

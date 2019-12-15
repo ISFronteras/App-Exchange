@@ -8,5 +8,6 @@ export interface Account {
   name: any;
   plataform?: any;
   numberAccount?: any;
+  documentNumber?:any;
   type: any;
 }

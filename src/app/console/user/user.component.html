@@ -154,6 +154,15 @@
             </mat-error>
           </mat-form-field>
           <mat-form-field *ngIf="type.value === typeAccounts.banking">
+            <input matInput type="number" placeholder="Documento de identificación" formControlName="dIdentificacion" min="0">
+            <mat-error *ngIf="dIdentificacion.hasError('required')">
+              El campo es requerido.
+            </mat-error>
+            <mat-error *ngIf="dIdentificacion.hasError('pattern')">
+              Sólo números sin decimales permitidos.
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field *ngIf="type.value === typeAccounts.banking">
             <mat-select placeholder="Tipo de Cuenta Bancaria" formControlName="accountType">
               <mat-option *ngFor="let accountType of accountTypes" [value]="accountType">
                 {{accountType}}

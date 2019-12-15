@@ -5,8 +5,7 @@
         <h2 class="title">Panel de Administración</h2>
       </mat-card-title>
       <mat-card-content>
-        <mat-tab-group>
-          <mat-tab label="Plataformas">
+        <mat-tab-group> <mat-tab label="Plataformas">
             <h3 class="center-text">Tipos de cambio actual:</h3>
             <div class="center-container" *ngIf="exchangeRates">
               <div class="container-row" *ngFor="let rate of exchangeRates">
@@ -60,6 +59,25 @@
             </div>
             <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
           </mat-tab>
+            <mat-tab label="Venta/Compra Plataformas">
+              <h3 class="center-text">Venta/Compra Moneda por plataforma:</h3>
+              <div class="center-container" *ngIf="plataformsBuySell">
+                <div class="container-row-buysell" *ngFor="let pBuySell of plataformsBuySell">
+                  <p class="container-text" align="center">
+                    {{pBuySell.namePBuySell}}:<br>
+                    compra : <b>{{pBuySell.compraCop}} COP / {{pBuySell.compraBs}} BS.s / {{pBuySell.compraSoles}} Soles</b><br>
+                    venta : <b>{{pBuySell.ventaCop}} COP / {{pBuySell.ventaBs}} BS.s / {{pBuySell.ventaSoles}} Soles</b>
+                  </p>
+                  <button class="container-button" mat-raised-button color="primary"
+                    (click)="openDialog('editPlataformBuySell', '', '', '','', pBuySell)">Editar</button>
+                  <button class="container-button" mat-raised-button color="secondary"
+                    (click)="openDialog('deletePlataformBuySell', '', '', '','', pBuySell)">Eliminar</button>
+                </div>
+              </div> 
+              <div class="center-container">
+                <button mat-raised-button color="primary" (click)="openDialog('addPlataformBuySell')">Agregar plataforma compra/venta</button>
+              </div> 
+            </mat-tab>
           <mat-tab label="Clientes">
             <mat-table [dataSource]="users">
 

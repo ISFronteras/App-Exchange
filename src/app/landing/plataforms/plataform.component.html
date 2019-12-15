@@ -1,0 +1,17 @@
+<section id="plataform">
+    <mat-carousel interval="3000" color="primary" proportion="60" [hideIndicators]="true">
+        <mat-carousel-slide [hideOverlay]="true" *ngFor="let pBuySell of plataformsBuySell">
+            <mat-card class="jumbo-card">
+                <mat-card-content class="columns is-multiline is-centered">
+                    <div>
+                        <p class="container-text" align="center">
+                            {{pBuySell.namePBuySell}}:<br>
+                            Compra : <b *ngIf="pBuySell.compraCop!=0">{{pBuySell.compraCop}} COP</b> <b *ngIf="pBuySell.compraBs!=0">/ {{pBuySell.compraBs}} BS.s</b> <b *ngIf="pBuySell.compraSoles!=0">/ {{pBuySell.compraSoles}} Soles</b><br>
+                            Venta : <b *ngIf="pBuySell.ventaCop!=0">{{pBuySell.ventaCop}} COP</b> <b *ngIf="pBuySell.ventaBs!=0">/ {{pBuySell.ventaBs}} BS.s</b> <b *ngIf="pBuySell.ventaSoles!=0">/ {{pBuySell.ventaSoles}} Soles</b>
+                          </p>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </mat-carousel-slide>
+    </mat-carousel>
+</section>

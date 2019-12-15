@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component,OnInit, Inject } from '@angular/core';
 
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material';
 
@@ -12,8 +12,9 @@ import { Rate } from '../../interfaces/rate';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 
 import { AngularFireStorage } from '@angular/fire/storage';
-
+import { EmailService } from 'src/app/services/email.service';
 import swal from 'sweetalert2';
+import { PlataformBuySell } from 'src/app/interfaces/PlataformBuySell';
 
 @Component({
   selector: 'app-modal',
@@ -21,7 +22,7 @@ import swal from 'sweetalert2';
   styleUrls: ['./modal.component.scss']
 })
 export class ModalComponent implements OnInit {
-
+  currentUser: User;
   action: string;
   account: Account;
   operation: Operation;
@@ -44,6 +45,9 @@ export class ModalComponent implements OnInit {
 
   exchangeRate: Rate;
   exchangeRateForm: FormGroup;
+
+  plataformBuySellForm: FormGroup;
+  plataformBuySell:PlataformBuySell;
   
   constructor(
     private dialogRef: MatDialogRef<ModalComponent>,
@@ -51,6 +55,7 @@ export class ModalComponent implements OnInit {
     private userService: UserService,
     private formBuilder: FormBuilder,
     private firebaseStorage: AngularFireStorage,
+    private emailService:EmailService,
   ) { }
 
   ngOnInit() {
@@ -58,8 +63,10 @@ export class ModalComponent implements OnInit {
     this.user = this.data.user;
     this.operation = this.data.operation;
     this.plataform = this.data.plataform;
+    this.plataformBuySell=this.data.plataformBuySell;
     this.exchangeRate = this.data.exchangeRate;
-    this.account = this.data.account
+    this.account = this.data.account;
+    this.currentUser = this.data.currentUser;
     if (this.action === 'addPlataform') {
       this.buildPlataformForm();
     }
@@ -71,6 +78,12 @@ export class ModalComponent implements OnInit {
     }
     if (this.action === 'editExchangeRate') {
       this.buildEditExchangeRateForm();
+    }
+    if (this.action === 'addPlataformBuySell') {
+      this.buildPlataformBuySellForm();
+    }
+    if (this.action === 'editPlataformBuySell') {
+      this.buildEditPlataformBuySellForm();
     }
   }
 
@@ -140,6 +153,96 @@ export class ModalComponent implements OnInit {
       ])]
     });
   }
+
+  buildEditPlataformBuySellForm() {
+    this.plataformBuySellForm = this.formBuilder.group({
+      namePBuySell: [this.plataformBuySell.namePBuySell, Validators.required],
+      ventaBs: [this.plataformBuySell.ventaBs, Validators.compose([
+        Validators.required,
+        Validators.pattern('^[0-9]+(\.[0-9]{0,4})?$')
+      ])],
+      ventaCop: [this.plataformBuySell.ventaCop, Validators.compose([
+        Validators.required,
+        Validators.pattern('^[0-9]+(\.[0-9]{0,4})?$')
+      ])],
+      ventaSoles: [this.plataformBuySell.ventaSoles, Validators.compose([
+        Validators.required,
+        Validators.pattern('^[0-9]+(\.[0-9]{0,4})?$')
+      ])],
+      compraBs: [this.plataformBuySell.compraBs, Validators.compose([
+        Validators.required,
+        Validators.pattern('^[0-9]+(\.[0-9]{0,4})?$')
+      ])],
+      compraCop: [this.plataformBuySell.compraCop, Validators.compose([
+        Validators.required,
+        Validators.pattern('^[0-9]+(\.[0-9]{0,4})?$')
+      ])],
+      compraSoles: [this.plataformBuySell.compraSoles, Validators.compose([
+        Validators.required,
+        Validators.pattern('^[0-9]+(\.[0-9]{0,4})?$')
+      ])]
+    });
+  }
+
+
+  buildPlataformBuySellForm() {
+    this.plataformBuySellForm = this.formBuilder.group({
+      namePBuySell: ['', Validators.required],
+      ventaBs: ['', Validators.compose([
+        Validators.required,
+        Validators.pattern('^[0-9]+(\.[0-9]{0,4})?$')
+      ])],
+      ventaCop: ['', Validators.compose([
+        Validators.required,
+        Validators.pattern('^[0-9]+(\.[0-9]{0,4})?$')
+      ])],
+      ventaSoles: ['', Validators.compose([
+        Validators.required,
+        Validators.pattern('^[0-9]+(\.[0-9]{0,4})?$')
+      ])],
+      compraBs: ['', Validators.compose([
+        Validators.required,
+        Validators.pattern('^[0-9]+(\.[0-9]{0,4})?$')
+      ])],
+      compraCop: ['', Validators.compose([
+        Validators.required,
+        Validators.pattern('^[0-9]+(\.[0-9]{0,4})?$')
+      ])],
+      compraSoles: ['', Validators.compose([
+        Validators.required,
+        Validators.pattern('^[0-9]+(\.[0-9]{0,4})?$')
+      ])]
+    });
+  }
+
+get namePBuySell(){
+  return this.plataformBuySellForm.get('namePBuySell');
+}
+
+get ventaBs(){
+  return this.plataformBuySellForm.get('ventaBs');
+}
+
+get ventaCop(){
+  return this.plataformBuySellForm.get('ventaCop');
+}
+
+get ventaSoles(){
+  return this.plataformBuySellForm.get('ventaSoles');
+}
+
+
+get compraBs(){
+  return this.plataformBuySellForm.get('compraBs');
+}
+
+get compraCop(){
+  return this.plataformBuySellForm.get('compraCop');
+}
+
+get compraSoles(){
+  return this.plataformBuySellForm.get('compraSoles');
+}
 
   buildEditExchangeRateForm() {
     this.exchangeRateForm = this.formBuilder.group({
@@ -271,6 +374,60 @@ export class ModalComponent implements OnInit {
       });
   }
 
+  addPlataformBuySell() {
+    if (this.plataformBuySellForm.invalid) {
+      this.markFormGroupTouched(this.plataformBuySellForm);
+      return;
+    }
+    const plataformBuySell: PlataformBuySell = {
+      ...this.plataformBuySellForm.value,
+      id: Date.now()
+    };
+    this.userService.registerPlataformBuySell(plataformBuySell)
+      .then(data => {
+        const message = `La plataforma compra/venta se agregó exitosamente`;
+        this.close(data, message);
+      })
+      .catch(data => {
+        const message = `Ocurrió un error, intente de nuevo`;
+        this.close(data, message);
+      });
+  }
+
+  editPlataformBuySell() {
+    if (this.plataformBuySellForm.invalid) {
+      this.markFormGroupTouched(this.plataformBuySellForm);
+      return;
+    }
+    const plataformBuySell: PlataformBuySell = {
+      ...this.plataformBuySellForm.value,
+      id: this.plataformBuySell.id
+    };
+    this.userService.editPlataformBuySell(plataformBuySell)
+      .then(data => {
+        const message = `La plataforma se editó exitosamente`;
+        this.close(data, message);
+      })
+      .catch(data => {
+        const message = `Ocurrió un error, intente de nuevo`;
+        this.close(data, message);
+      });
+  }
+
+  deletePlataformBuySell() {
+    this.userService.deletePlataformBuySell(this.plataformBuySell.id)
+      .then(data => {
+        const message = `La plataforma compra/venta se eliminó exitosamente`;
+        this.close(data, message);
+      })
+      .catch(data => {
+        const message = `Ocurrió un error, intente de nuevo`;
+        this.close(data, message);
+      });
+  }
+
+
+
   addExchangeRate() {
     if (this.exchangeRateForm.invalid) {
       this.markFormGroupTouched(this.exchangeRateForm);
@@ -338,6 +495,28 @@ export class ModalComponent implements OnInit {
             }
             this.userService.editOperation(operationWithVoucher)
               .then( data => {
+
+                const  dataCustomer = {
+                  toName : this.currentUser.displayName,
+                  toEmail:this.currentUser.email,
+                  toFrom:'intercambiossinfronteras@gmail.com',
+                  toSubject:'Notificacion solicitud',
+                  toBody:'Su solicitud esta en estado revisión, para ver mas detalles por favor diríjase al historial del panel de administración de la plataforma ISFRONTERAS'
+                  };
+             
+                  const  dataAdmin = {
+                   toName : 'ISFRONTERAS',
+                   toEmail: 'intercambiossinfronteras@gmail.com',
+                   toFrom:'intercambiossinfronteras@gmail.com',
+                   toSubject:'Notificacion solicitud',
+                   toBody:'Un usuario a cambiado una de sus solicitudes a estado revisión, para ver los detalles, por favor diríjase al historial del panel de administración de la plataforma ISFRONTERAS'
+                 };
+             
+                     this.emailService.sendEmail(dataCustomer);
+                     this.emailService.sendEmail(dataAdmin);
+        
+
+
                 const message = `El comprobante de la operación se guardó exitosamente`;
                 this.close(data, message);
               })
@@ -369,6 +548,18 @@ export class ModalComponent implements OnInit {
             this.userService.editOperation(operationWithVoucher)
               .then(data => {
                 const message = `Operación completada exitosamente`;
+
+                const  dataCustomer = {
+                  toName : this.currentUser.displayName,
+                  toEmail:this.currentUser.email,
+                  toFrom:'intercambiossinfronteras@gmail.com',
+                  toSubject:'Notificacion solicitud',
+                  toBody:'Su solicitud esta en estado procesada, para ver mas detalles por favor diríjase al historial del panel de administración de la plataforma ISFRONTERAS'
+                  };
+               
+                     this.emailService.sendEmail(dataCustomer);
+                     
+
                 this.close(data, message);
               })
               .catch(error => {
@@ -421,6 +612,16 @@ export class ModalComponent implements OnInit {
     }
     this.userService.editOperation(acceptedOperation)
       .then( data => {
+      
+        const  dataCustomer = {
+          toName : this.currentUser.displayName,
+          toEmail:this.currentUser.email,
+          toFrom:'intercambiossinfronteras@gmail.com',
+          toSubject:'Notificacion solicitud',
+          toBody:'Su solicitud ha cambiado ha estado en proceso, para ver mas detalles por favor diríjase al historial del panel de administración de la plataforma ISFRONTERAS'
+          };
+             this.emailService.sendEmail(dataCustomer);
+        
         const message = `La operación se aprobó exitosamente`;
         this.close(data, message);
       })
@@ -438,6 +639,17 @@ export class ModalComponent implements OnInit {
     this.userService.editOperation(rejectedOperation)
       .then( data => {
         const message = `La operación se rechazó exitosamente`;
+        const  dataCustomer = {
+          toName : this.currentUser.displayName,
+          toEmail:this.currentUser.email,
+          toFrom:'intercambiossinfronteras@gmail.com',
+          toSubject:'Notificacion solicitud',
+          toBody:'Su solicitud ha cambiado ha estado rechazada, para ver mas detalles por favor diríjase al historial del panel de administración de la plataforma ISFRONTERAS'
+          };
+    
+             this.emailService.sendEmail(dataCustomer);
+      
+
         this.close(data, message);
       })
       .catch( data => {
@@ -454,6 +666,17 @@ export class ModalComponent implements OnInit {
     this.userService.editOperation(closedOperation)
       .then( data => {
         const message = `La operación se cerró exitosamente`;
+        const  dataCustomer = {
+          toName : this.currentUser.displayName,
+          toEmail:this.currentUser.email,
+          toFrom:'intercambiossinfronteras@gmail.com',
+          toSubject:'Notificacion solicitud',
+          toBody:'Su solicitud ha cambiado ha estado exitosa, para ver mas detalles por favor diríjase al historial del panel de administración de la plataforma ISFRONTERAS'
+          };
+    
+             this.emailService.sendEmail(dataCustomer);
+      
+
         this.close(data, message);
       })
       .catch( data => {

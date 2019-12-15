@@ -8,6 +8,23 @@
   justify-content: space-around;
   margin: 20px;
 
+.container-row-buysell{
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  padding-right: 20px;
+  padding-bottom: 20px;
+
+  .container-text {
+    flex: 1 100%;
+  }
+
+  .container-button {
+    flex: 0 0 auto;
+    margin: 0 10px;
+  }
+}
+
   .container-row {
     align-items: center;
     display: flex;
@@ -52,7 +69,7 @@ mat-card-title {
   position: relative;
   width: 100%;
   padding: 16px;
-  background-color: #e4effa !important;
+  background-color:rgb(113, 155, 221) !important;
 }
 
 .title {

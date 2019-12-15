@@ -2,14 +2,14 @@
 	<div class="hero-body">
 		<div class="container">
 			<div class="columns is-vcentered">
-				<div class="column jumbo-presentation">
-					<h2 class="jumbo-title">
-						Rápido y Seguro
-					</h2>
-					<p class="jumbo-text">
-						Transfiere y retira de tu monedero electrónico con la comisión más barata del mercado.
-						Haz cambio de divisas y envío de remesas con la tranquilidad que mereces.
-					</p>
+				<div class="column jumbo-presentation">	
+							<h2 class="jumbo-title">
+									Rápido y Seguro
+								</h2>
+								<p class="jumbo-text">
+									Transfiere y retira de tu monedero electrónico con la comisión más barata del mercado.
+								</p><br>
+								<app-plataform *ngIf="!login"></app-plataform>
 				</div>
 				<div class="column">
 					<mat-card class="jumbo-card">

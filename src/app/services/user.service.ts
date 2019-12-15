@@ -7,6 +7,7 @@ import { Account  } from '../interfaces/account';
 import { Operation } from '../interfaces/operation';
 import { Plataform } from '../interfaces/plataform';
 import { Rate } from '../interfaces/rate';
+import { PlataformBuySell } from '../interfaces/PlataformBuySell';
 
 @Injectable({
   providedIn: 'root'
@@ -94,16 +95,32 @@ export class UserService {
     return this.angularFireDatabase.object('/plataforms/' + plataform.id).set(plataform);
   }
 
+  registerPlataformBuySell(plataformBuySell: PlataformBuySell) {
+    return this.angularFireDatabase.object('/plataformsBuySell/' + plataformBuySell.id).set(plataformBuySell);
+  }
+
   editPlataform(plataform: Plataform) {
     return this.angularFireDatabase.object('/plataforms/' + plataform.id).update(plataform);
+  }
+
+  editPlataformBuySell(PlataformBuySell: PlataformBuySell) {
+    return this.angularFireDatabase.object('/plataformsBuySell/' + PlataformBuySell.id).update(PlataformBuySell);
   }
 
   deletePlataform(id: number) {
     return this.angularFireDatabase.object('/plataforms/' + id).remove();
   }
 
+  deletePlataformBuySell(id: number) {
+    return this.angularFireDatabase.object('/plataformsBuySell/' + id).remove();
+  }
+
   getExchangeRates() {
     return this.angularFireDatabase.list('/exchangeRates/').valueChanges();
+  }
+
+  getPlataformsBuySell(){
+    return this.angularFireDatabase.list('/plataformsBuySell/').valueChanges();
   }
 
   addExchangeRate(newRate: Rate) {

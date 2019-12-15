@@ -9,6 +9,7 @@ import { Operation } from '../../interfaces/operation';
 import { Plataform } from '../../interfaces/plataform';
 import { User } from '../../interfaces/user';
 import { Rate } from '../../interfaces/rate';
+import { EmailService } from 'src/app/services/email.service';
 
 // ES6 Modules or TypeScript
 import swal from 'sweetalert2';
@@ -25,29 +26,41 @@ export class WithdrawComponent implements OnInit, OnChanges, OnDestroy {
   @Input() public currentUser: User;
   accountsSubscription: Subscription;
   @Output() view = new EventEmitter<String>();
-  
+  addAccount = false;
   accounts: Account[];
   exchangeRates: Rate[];
   exchangeRate: Rate;
   plataforms: Plataform[];
   currencies: string[] = [];
-
+  registerAccountForm: FormGroup;
   withdrawForm: FormGroup;
-  
+  account: Account;
   toReceive = {
     amount: null,
     tax: null,
   }
+  typeAccounts = {
+    plataform: 'Monedero Electrónico',
+    banking: 'Cuenta Bancaria'
+  };
+  accountTypes = [
+    'Cuenta de Ahorro', 'Cuenta Corriente'
+  ];
 
-  messages = [
+  messagesWithDraw = [
     'Retira dinero desde tu cuenta bancaria nacional a otra cuenta de otro país (moneda local a monera extranjera).',
     'Retira dinero desde un monedero electrónico a tu cuenta bancaria nacional (dólar a moneda local).',
     'Retira de tu monedero electrónico preferido hacia otros monederos u otras cuentas de amigos (dólar a otros medios).'
   ]
 
+  messagesAddAccount = [
+    'Debe registrar cuentas para poder realizar retiros',  
+  ]
+
   constructor(
     private userService: UserService,
-    private formBuilder: FormBuilder 
+    private formBuilder: FormBuilder,
+    private emailService:EmailService  
   ) { }
 
   ngOnInit() {
@@ -197,6 +210,26 @@ export class WithdrawComponent implements OnInit, OnChanges, OnDestroy {
     this.userService.registerOperation(withdraw)
       .then(r => {
         const msj = `En minutos atenderemos su solicitud, puede hacer seguimiento y ver el estado de su operación en el <b>Historial</b> de operaciones`;
+       
+        const  dataCustomer = {
+          toName : this.currentUser.displayName,
+          toEmail:this.currentUser.email,
+          toFrom:'intercambiossinfronteras@gmail.com',
+          toSubject:'Notificacion solicitud',
+          toBody:'Su retiro ha sido enviado y esta en estado solicitada, para ver mas detalles por favor diríjase al historial del panel de administración de la plataforma ISFRONTERAS'
+          };
+     
+          const  dataAdmin = {
+           toName : 'ISFRONTERAS',
+           toEmail: 'intercambiossinfronteras@gmail.com',
+           toFrom:'intercambiossinfronteras@gmail.com',
+           toSubject:'Notificacion solicitud',
+           toBody:'Un usuario a realizado una nueva solicitud de retiro para ver los detalles, por favor diríjase al historial del panel de administración de la plataforma ISFRONTERAS'
+         };
+     
+             this.emailService.sendEmail(dataCustomer);
+             this.emailService.sendEmail(dataAdmin);
+       
         swal.fire({
           html: msj,
           type: 'success',
@@ -213,7 +246,147 @@ export class WithdrawComponent implements OnInit, OnChanges, OnDestroy {
       });
   }
 
+  showAddAccount() {
+    this.addAccount = true;
+    this.buildRegisterForm();
+  }
+
+  buildRegisterForm() {
+    this.userService.getPlataforms()
+      .subscribe( (plataforms: Plataform[]) => {
+        this.plataforms = plataforms;
+      }, error => console.error(error) );
+    this.registerAccountForm = this.formBuilder.group({
+      type: ['', Validators.required],
+      plataform: ['', Validators.required],
+      name: ['', Validators.required],
+      entity: ['', Validators.required],
+      eWallet: ['', Validators.required],
+      numberAccount: ['', Validators.compose([
+        Validators.required,
+        Validators.pattern('[0-9]+')
+      ])],
+      dIdentificacion: ['', Validators.compose([
+        Validators.required,
+        Validators.pattern('[0-9]+')
+      ])],
+      accountType: ['', Validators.required]
+    });
+  }
+
+  //- Register form vars
+get date() {
+  return this.registerAccountForm.get('date');
+}
+
+get type() {
+  return this.registerAccountForm.get('type');
+}
+
+get name() {
+  return this.registerAccountForm.get('name');
+}
+
+get plataform() {
+  return this.registerAccountForm.get('plataform');
+}
+
+get entity() {
+  return this.registerAccountForm.get('entity');
+}
+
+get numberAccount() {
+  return this.registerAccountForm.get('numberAccount');
+}
+
+get accountType() {
+  return this.registerAccountForm.get('accountType');
+}
+
+get eWallet() {
+  return this.registerAccountForm.get('eWallet');
+}
+
+
+get dIdentificacion() {
+  return this.registerAccountForm.get('dIdentificacion');
+}
+
+
+  registerAccount() {
+    const date = Date.now();
+    if (this.type.value === this.typeAccounts.plataform) {
+      this.account = {
+        currency: this.plataform.value.currency,
+        id: `${this.plataform.value.name}: ${this.eWallet.value}`,
+        name: this.name.value,
+        eWallet : this.eWallet.value,
+        date: date,
+        plataform: this.plataform.value,
+        type: this.type.value
+      }
+      const controls = Object.values(this.account);
+      for ( let i = 0; i < controls.length; i++) {
+        if ( controls[i] === '') {
+          swal.fire({
+            type: 'warning',
+            title: 'Complete los campos solicitados'
+          });
+          return
+        }
+      }
+      if (this.eWallet.hasError('eWallet') ) {
+        return
+      }
+    } else if (this.type.value === this.typeAccounts.banking) {
+      this.account = {
+        currency: this.entity.value.currency,
+        name: this.name.value,
+        accountType: this.accountType.value,
+        entity: this.entity.value,
+        date: date,
+        id: `${this.entity.value.name}: ${this.numberAccount.value}`,
+        numberAccount: this.numberAccount.value,
+        documentNumber:this.dIdentificacion.value,
+        type: this.type.value
+      }
+      const controls = Object.values(this.account);
+      for ( let i = 0; i < controls.length; i++) {
+        if ( controls[i] === '') {
+          swal.fire({
+            type: 'warning',
+            title: 'Complete los campos solicitados'
+          });
+          return
+        }
+      }
+    } else {
+      swal.fire({
+        type: 'warning',
+        title: 'Seleccione un tipo de cuenta'
+      });
+      return;
+    }
+    this.userService.registerAccount(this.account, this.currentUser.uid)
+      .then(r => {
+        swal.fire({
+          type: 'success',
+          title: 'Registro de cuenta realizada',
+          text: `Su cuenta  ${this.account.type} ha sido registrada exitosamente.`,
+        });
+        this.changeView('withdrawView');
+      })
+      .catch(error => {
+        console.error(error)
+        swal.fire({
+          type: 'error',
+          title: 'Ocurrió un error registrando su cuenta'
+        });
+      });
+  }
+
   changeView(view: String) {
+    this.addAccount=false;
     this.view.emit(view);
   }
 

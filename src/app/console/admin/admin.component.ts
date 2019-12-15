@@ -11,6 +11,7 @@ import { Rate } from '../../interfaces/rate';
 import { ModalComponent } from '../modal/modal.component';
 
 import { Subscription } from 'rxjs';
+import { PlataformBuySell } from 'src/app/interfaces/PlataformBuySell';
 
 @Component({
   selector: 'app-admin',
@@ -24,6 +25,7 @@ export class AdminComponent implements OnInit, OnChanges, OnDestroy {
   operationsSubscription: Subscription;
 
   exchangeRates: Rate[];
+  plataformsBuySell: PlataformBuySell[];
   plataforms: any;
   plataformsColumns: string[] = ['name', 'tax', 'plataformsOptions'];
   @ViewChildren(MatPaginator) paginator = new QueryList<MatPaginator>();
@@ -52,6 +54,7 @@ export class AdminComponent implements OnInit, OnChanges, OnDestroy {
   ngOnInit() {
     this.getExchangeRates();
     this.getPlataforms();
+    this.getPlataformsBuySell();
   }
 
   ngOnChanges() {
@@ -119,6 +122,15 @@ export class AdminComponent implements OnInit, OnChanges, OnDestroy {
       });
   }
 
+getPlataformsBuySell(){
+  this.userService.getPlataformsBuySell()
+  .subscribe( (plataformBuySell: PlataformBuySell[]) => {
+    this.plataformsBuySell = plataformBuySell;
+  }, error => console.error(error));
+
+
+}
+
   getExchangeRates() {
     this.userService.getExchangeRates()
       .subscribe( (rates: Rate[]) => {
@@ -126,7 +138,7 @@ export class AdminComponent implements OnInit, OnChanges, OnDestroy {
       }, error => console.error(error));
   }
 
-  openDialog(action: string, user?: User, operation?: Operation, plataform?: Plataform, exchangeRate?: Rate) {
+  openDialog(action: string, user?: User, operation?: Operation, plataform?: Plataform, exchangeRate?: Rate, plataformBuySell?:PlataformBuySell) {
     const dialogRef = this.dialog.open(ModalComponent, {
       width: '360px',
       data: {
@@ -134,7 +146,9 @@ export class AdminComponent implements OnInit, OnChanges, OnDestroy {
         user: user,
         operation: operation,
         plataform: plataform,
-        exchangeRate: exchangeRate
+        exchangeRate: exchangeRate,
+        plataformBuySell:plataformBuySell,
+        currentUser:this.currentUser
       }
     });
     dialogRef.afterClosed()

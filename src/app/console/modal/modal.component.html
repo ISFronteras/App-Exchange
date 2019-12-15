@@ -24,6 +24,92 @@
     </mat-dialog-actions>
   </div>
   
+  <div *ngIf="action === 'addPlataformBuySell' || action === 'editPlataformBuySell'">
+    <h2 mat-dialog-title *ngIf="action === 'addPlataformBuySell'">Agregar plataforma compra/venta</h2>
+    <h2 mat-dialog-title *ngIf="action === 'editPlataformBuySell'">Editar plataforma compra/venta</h2>
+    <mat-dialog-content>
+      <form [formGroup]="plataformBuySellForm">
+        <mat-form-field>
+          <input matInput type="text" name="namePBuySell" placeholder="Nombre" formControlName="namePBuySell" required>
+          <mat-error *ngIf="namePBuySell.hasError('required')">
+            El campo es requerido.
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput type="number" placeholder="compra COP" formControlName="compraCop" required>
+          <mat-error *ngIf="compraCop.hasError('required')">
+            El campo es requerido.
+          </mat-error>
+          <mat-error *ngIf="compraCop.hasError('pattern')">
+            Se aceptan máximo 4 decimales.
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput type="number" placeholder="venta COP" formControlName="ventaCop" required>
+          <mat-error *ngIf="ventaCop.hasError('required')">
+            El campo es requerido.
+          </mat-error>
+          <mat-error *ngIf="ventaCop.hasError('pattern')">
+            Se aceptan máximo 4 decimales.
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput type="number" placeholder="compra Bs.s" formControlName="compraBs" required>
+          <mat-error *ngIf="compraBs.hasError('required')">
+            El campo es requerido.
+          </mat-error>
+          <mat-error *ngIf="compraBs.hasError('pattern')">
+            Se aceptan máximo 4 decimales.
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput type="number" placeholder="venta Bs.s" formControlName="ventaBs" required>
+          <mat-error *ngIf="ventaBs.hasError('required')">
+            El campo es requerido.
+          </mat-error>
+          <mat-error *ngIf="ventaBs.hasError('pattern')">
+            Se aceptan máximo 4 decimales.
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput type="number" placeholder="compra Soles" formControlName="compraSoles" required>
+          <mat-error *ngIf="compraSoles.hasError('required')">
+            El campo es requerido.
+          </mat-error>
+          <mat-error *ngIf="compraSoles.hasError('pattern')">
+            Se aceptan máximo 4 decimales.
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput type="number" placeholder="venta Soles" formControlName="ventaSoles" required>
+          <mat-error *ngIf="ventaSoles.hasError('required')">
+            El campo es requerido.
+          </mat-error>
+          <mat-error *ngIf="ventaSoles.hasError('pattern')">
+            Se aceptan máximo 4 decimales.
+          </mat-error>
+        </mat-form-field>
+      </form>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+      <button mat-raised-button mat-dialog-close>Cancelar</button>
+      <button mat-raised-button color="primary" (click)="addPlataformBuySell()" *ngIf="action === 'addPlataformBuySell'">Agregar</button>
+      <button mat-raised-button color="primary" (click)="editPlataformBuySell()" *ngIf="action === 'editPlataformBuySell'">Editar</button>
+    </mat-dialog-actions>
+  </div>
+  
+  <div *ngIf="action === 'deletePlataformBuySell'">
+    <h2 mat-dialog-title>Eliminar plataforma</h2>
+    <mat-dialog-content>
+      <p>¿Seguro quiere eliminar la plataforma compra/moneda {{plataformBuySell.namePBuySell}}?</p>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+      <button mat-raised-button mat-dialog-close>Cancelar</button>
+      <button mat-raised-button color="primary" (click)="deletePlataformBuySell()">Eliminar</button>
+    </mat-dialog-actions>
+  </div>
+
+
   <div *ngIf="action === 'addPlataform' || action === 'editPlataform'">
     <h2 mat-dialog-title *ngIf="action === 'addPlataform'">Agregar plataforma</h2>
     <h2 mat-dialog-title *ngIf="action === 'editPlataform'">Editar plataforma</h2>

@@ -3,4 +3,5 @@ export interface Rate {
 	currencyTo: string;
 	id: string;
 	value: number;
+    
 }
